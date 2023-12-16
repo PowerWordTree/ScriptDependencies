@@ -1,0 +1,3 @@
+# 排除Bin中文件
+/Bin/*
+!/Bin/Readme.md

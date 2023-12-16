@@ -1,0 +1,78 @@
+# 获取脚本依赖
+
+一个管理脚本依赖的工具.
+
+在 CMD 脚本中包含`::Bin:Xxxx.exe::`和`::Script:Xxxx.cmd::`注释, 指示 CMD 脚本使用了这些依赖文件. 再使用本工具将依赖文件复制到指定位置, 以提供 CMD 脚本调用.
+
+注意: 在 Bin 目录需要 MSVC BuildTools 的一些文件, 详情请查看`Bin/Readme.md`.
+
+## 配置文件
+
+### 格式
+
+- 注释行(comment)
+
+  以`#`开头的行.
+
+- 无效行(invalid)
+
+  不包含`=`或者`=`后为空.
+
+- 段(section)
+
+  以`[]`包裹的单行, 可以存在默认段.
+
+- 键(key)
+
+  每行第一个`=`左边的字符串.
+
+- 值(value)
+
+  每行第一个`=`右边的字符串.
+
+### 内容
+
+- 清理设置(CLEAN)
+
+  段外键值, 键`CLEAN`, 可选值`TRUE`或者`FALSE`, 默认值`FALSE`. 执行前清空目标目录, `TRUE`清空, `USFALSEER`忽略.
+
+- 可执行文件段(BIN)
+
+  段名`BIN`, 段内定义`SRC`和`DST`键值. `SRC`指定依赖来源路径, 可以指定多个, 使用`;`分隔. `DST`指定复制依赖到目标路径, 复制包含相关库文件.
+
+- 脚本文件段(SCRIPT)
+
+  段名`SCRIPT`, 段内定义`SRC`和`DST`键值. `SRC`指定依赖来源路径, 可以指定多个, 使用`;`分隔. `DST`指定复制依赖到目标路径, 复制包含相关依赖脚本.
+
+- 变量(Variable)
+
+  配置文件中如果包含`%`包裹的变量, 在执行操作时会被展开. 需要保留的变量, 可以`%%`方式进行转义.
+
+### 示例
+
+```ini
+CLEAN=TRUE
+
+[BIN]
+SRC=%CD%\..\..\Cygwin\bin
+DST=%CD%\Target\Bin
+
+[SCRIPT]
+SRC=%CD%\..\..\Shell\Script
+DST=%CD%\Target\Script
+```
+
+## 命令行:
+
+命令行: ScriptDependents.cmd <脚本文件>...
+
+- 脚本文件
+
+  可以指定一个或多个脚本文件，支持`*`和`?`通配符.
+
+### 示例
+
+```bat
+ScriptDependents.cmd 1.cmd 2.cmd
+ScriptDependents.cmd ..\xxx\*.cmd
+```
