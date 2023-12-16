@@ -46,7 +46,7 @@
 
 - 变量(Variable)
 
-  配置文件中如果包含`%`包裹的变量, 会被展开. 需要保留时, 可以用`%%`方式转义.
+  配置文件中如果包含`%`包裹的变量, 会被展开.
 
 ### 示例
 
@@ -54,12 +54,12 @@
 CLEAN=TRUE
 
 [BIN]
-SRC=%CD%\..\..\Cygwin\bin
-DST=%CD%\Target\Bin
+SRC=%CYGWIN_HOME%\Bin
+DST=Target\Bin
 
 [SCRIPT]
-SRC=%CD%\..\..\Shell\Script
-DST=%CD%\Target\Script
+SRC=%CD%\..\Script
+DST=Target\Script
 ```
 
 ## 命令行:
