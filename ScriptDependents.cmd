@@ -4,7 +4,6 @@
 
 ::Bin:Dumpbin.exe::
 ::Script:Config.FileRead.CMD::
-::Script:Object.ListAll.CMD::
 
 ::初始化环境
 @ECHO OFF
