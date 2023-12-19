@@ -30,7 +30,7 @@ EXIT /B
 
 ::…®√ËScript“¿¿µ(µ›πÈµ˜”√)
 :SCRIPT
-FOR /F "tokens=1,2 usebackq delims=#\;: " %%A IN (
+FOR /F "tokens=1,2 usebackq delims=#/;: " %%A IN (
   `TYPE "%~1" ^| FINDSTR "::[^:][^:]*:[^:][^:]*::"`
 ) DO IF /I "%%~A" == "Bin" (
   CALL :COPY_BIN "%%~B" && CALL :BIN "%CONFIG.BIN.DST%\%%~B"
