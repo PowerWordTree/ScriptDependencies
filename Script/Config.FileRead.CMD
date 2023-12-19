@@ -1,5 +1,5 @@
 ::@author FB
-::@version 0.1.0
+::@version 0.1.1
 
 ::数据结构为Object
 ::仅支持一级段
@@ -23,8 +23,8 @@ FOR /F "eol=# tokens=1,* usebackq delims==" %%A IN (
 ) DO (
   SET "@KEY=%%~A"
   SET "@VALUE=%%~B"
-  CALL String.Trim.CMD %%@KEY%% & CALL SET "@KEY=%%@%%"
-  CALL String.Trim.CMD %%@VALUE%% & CALL SET "@VALUE=%%@%%"
+  CALL String.Trim.CMD "%%@KEY%%" & CALL SET "@KEY=%%@%%"
+  CALL String.Trim.CMD "%%@VALUE%%" & CALL SET "@VALUE=%%@%%"
   CALL :_PARSE_LINE
 )
 SET "@VALUE=" & SET "@KEY=" & SET "@SECTION=" & SET "@VAR="

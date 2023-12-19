@@ -1,6 +1,6 @@
 ::获取脚本依赖
 ::@author FB
-::@version 0.1.0
+::@version 0.1.1
 
 ::Bin:Dumpbin.exe::
 ::Script:Config.FileRead.CMD::
@@ -13,10 +13,7 @@ SET "PATH=%CD%\Bin;%CD%\Script;%PATH%"
 ::读取配置
 CALL Config.FileRead.CMD "CONFIG" "%~n0.ini"
 ::展开变量
-CALL SET "CONFIG.BIN.SRC=%CONFIG.BIN.SRC%"
-CALL SET "CONFIG.BIN.DST=%CONFIG.BIN.DST%"
-CALL SET "CONFIG.SCRIPT.SRC=%CONFIG.SCRIPT.SRC%"
-CALL SET "CONFIG.SCRIPT.DST=%CONFIG.SCRIPT.DST%"
+FOR /F "usebackq delims=" %%A IN (`SET "CONFIG."`) DO (CALL SET "%%~A")
 ::执行全部
 IF /I "%CONFIG.CLEAN%" == "TRUE" (
   RMDIR /Q /S "%CONFIG.BIN.DST%" 1>NUL 2>&1
@@ -33,7 +30,7 @@ EXIT /B
 
 ::扫描Script依赖(递归调用)
 :SCRIPT
-FOR /F "tokens=1,2 usebackq delims=:" %%A IN (
+FOR /F "tokens=1,2 usebackq delims=#\;: " %%A IN (
   `TYPE "%~1" ^| FINDSTR "::[^:][^:]*:[^:][^:]*::"`
 ) DO IF /I "%%~A" == "Bin" (
   CALL :COPY_BIN "%%~B" && CALL :BIN "%CONFIG.BIN.DST%\%%~B"
