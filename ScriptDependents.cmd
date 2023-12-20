@@ -1,8 +1,9 @@
 ::获取脚本依赖
 ::@author FB
-::@version 1.0.0
+::@version 1.1.0
 
 ::Bin:Dumpbin.exe::
+::Script:Object.Destroy.CMD::
 ::Script:Config.FileRead.CMD::
 
 ::初始化环境
@@ -10,21 +11,25 @@
 SETLOCAL ENABLEDELAYEDEXPANSION
 CD /D "%~dp0"
 SET "PATH=%CD%\Bin;%CD%\Script;%PATH%"
+SET "EXIT_CODE=0"
 ::读取配置
+CALL Object.Destroy.CMD "CONFIG"
 CALL Config.FileRead.CMD "CONFIG" "%~n0.ini"
-::展开变量
-FOR /F "usebackq delims=" %%A IN (`SET "CONFIG."`) DO (CALL SET "%%~A")
-::执行全部
-IF /I "%CONFIG.CLEAN%" == "TRUE" (
-  RMDIR /Q /S "%CONFIG.BIN.DST%" 1>NUL 2>&1
-  RMDIR /Q /S "%CONFIG.SCRIPT.DST%" 1>NUL 2>&1
+::初始化配置
+FOR /F "tokens=1,* usebackq delims==" %%A IN (`SET "CONFIG." 2^>NUL`) DO (
+  CALL SET "%%~A=%%~B"
+  IF /I "%%~xA" == ".DST" (
+    IF /I "%CONFIG.CLEAN%" == "TRUE" (
+      CALL RMDIR /Q /S "%%~B" 1>NUL 2>&1
+    )
+    CALL MKDIR "%%~B" 1>NUL 2>&1
+  )
 )
-MKDIR "%CONFIG.BIN.DST%" 1>NUL 2>&1
-MKDIR "%CONFIG.SCRIPT.DST%" 1>NUL 2>&1
+::执行全部
 FOR %%A IN (%*) DO (
   CALL :SCRIPT "%%~A"
 )
-EXIT /B
+EXIT /B %EXIT_CODE%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -33,9 +38,11 @@ EXIT /B
 FOR /F "tokens=1,2 usebackq delims=#/;: " %%A IN (
   `TYPE "%~1" ^| FINDSTR "::[^:][^:]*:[^:][^:]*::"`
 ) DO IF /I "%%~A" == "Bin" (
-  CALL :COPY_BIN "%%~B" && CALL :BIN "%CONFIG.BIN.DST%\%%~B"
+  CALL :COPY_BIN "%%~B" && CALL :BIN "%CONFIG.BIN.DST%\%%~B" || SET /A "EXIT_CODE+=1"
 ) ELSE IF /I "%%~A" == "Script" (
-  CALL :COPY_SCRIPT "%%~B" && CALL :SCRIPT "%CONFIG.SCRIPT.DST%\%%~B"
+  CALL :COPY_SCRIPT "%%~B" && CALL :SCRIPT "%CONFIG.SCRIPT.DST%\%%~B" || SET /A "EXIT_CODE+=1"
+) ELSE IF /I "%%~A" == "Other" (
+  CALL :COPY_OTHER "%%~B" || SET /A "EXIT_CODE+=1"
 )
 EXIT /B
 
@@ -53,7 +60,7 @@ EXIT /B 1
 FOR /F "tokens=* usebackq" %%A IN (
   `Dumpbin.exe /DEPENDENTS "%~1" ^| FINDSTR /I /R /C:"^    [^ ].*\.DLL$"`
 ) DO IF EXIST "%%~$CONFIG.BIN.SRC:A" (
-  CALL :COPY_BIN "%%~A" && CALL :BIN "%CONFIG.BIN.DST%\%%~A"
+  CALL :COPY_BIN "%%~A" && CALL :BIN "%CONFIG.BIN.DST%\%%~A" || SET /A "EXIT_CODE+=1"
 )
 EXIT /B
 
@@ -62,6 +69,15 @@ EXIT /B
 IF NOT EXIST "%CONFIG.BIN.DST%\%~1" (
   ECHO %~1
   COPY "%~$CONFIG.BIN.SRC:1" "%CONFIG.BIN.DST%\%~1"
+  EXIT /B
+)
+EXIT /B 1
+
+::复制Other文件
+:COPY_OTHER
+IF NOT EXIST "%CONFIG.OTHER.DST%\%~1" (
+  ECHO %~1
+  COPY "%~$CONFIG.OTHER.SRC:1" "%CONFIG.OTHER.DST%\%~1"
   EXIT /B
 )
 EXIT /B 1
