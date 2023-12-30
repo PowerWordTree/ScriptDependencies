@@ -3,6 +3,7 @@
 ::@version 1.1.0
 
 ::Bin:Dumpbin.exe::
+::Bin:Link.exe::
 ::Script:Object.Destroy.CMD::
 ::Script:Config.FileRead.CMD::
 
