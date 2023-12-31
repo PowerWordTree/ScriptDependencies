@@ -6,7 +6,9 @@
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-FOR /F "tokens=1,* usebackq delims==" %%A IN (`SET "%~1." 2^>NUL`) DO (
+FOR /F "tokens=1,* usebackq delims==" %%A IN (
+  `SET "%~1." 2^>NUL`
+) DO (
   SET "%%~A="
 )
 EXIT /B
