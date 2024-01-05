@@ -1,4 +1,4 @@
 # 排除Bin中文件
 /Bin/*
-!/Bin/Readme.md
+!/Bin/README.md
 /Target/
