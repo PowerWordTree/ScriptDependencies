@@ -1,6 +1,6 @@
 ::获取脚本依赖
 ::@author FB
-::@version 1.2.0
+::@version 1.2.1
 
 ::Bin:Dumpbin.exe::
 ::Bin:Link.exe::
@@ -28,7 +28,9 @@ FOR /F "tokens=1,* usebackq delims==" %%A IN (`SET "_CONFIG." 2^>NUL`) DO (
 )
 ::执行全部
 FOR %%A IN (%*) DO (
+  ECHO.[%%~A]
   CALL :SCRIPT "%%~A"
+  ECHO.
 )
 EXIT /B %_EXIT_CODE%
 
@@ -37,7 +39,7 @@ EXIT /B %_EXIT_CODE%
 ::扫描Script依赖(递归调用)
 :SCRIPT
 FOR /F "tokens=1,2 usebackq delims=#/;: " %%A IN (
-  `TYPE "%~1" ^| FINDSTR "::[^:][^:]*:[^:][^:]*::"`
+  `^(TYPE "%~1" ^|^| ECHO ::@:@::^) ^| FINDSTR "::[^:][^:]*:[^:][^:]*::"`
 ) DO IF /I "%%~A" == "Bin" (
   CALL :COPY_BIN "%%~B" && CALL :BIN "%_CONFIG.BIN.DST%\%%~B"
 ) ELSE IF /I "%%~A" == "Script" (
@@ -46,6 +48,8 @@ FOR /F "tokens=1,2 usebackq delims=#/;: " %%A IN (
   CALL :COPY_FILE "%%~B"
 ) ELSE IF /I "%%~A" == "Folder" (
   CALL :COPY_FOLDER "%%~B"
+) ELSE IF "%%~A%%~B" == "@@" (
+  SET /A "_EXIT_CODE+=1"
 )
 EXIT /B
 
