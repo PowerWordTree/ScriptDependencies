@@ -32,7 +32,7 @@
 
 配置文件为非标准 INI 格式, 使用ANSI编码.
 
-执行时读取同名但扩展名为`.ini`的配置文件, 通常为`ScriptDependents.ini`.
+执行时读取同名但扩展名为`.ini`的配置文件, 通常为`ScriptDependencies.ini`.
 
 ### 格式
 
@@ -102,7 +102,7 @@ DST=Target\Folder
 
 ## 命令行:
 
-命令行: ScriptDependents.cmd <脚本文件>...
+命令行: ScriptDependencies.cmd <脚本文件>...
 
 - 脚本文件
 
@@ -111,6 +111,6 @@ DST=Target\Folder
 ### 示例
 
 ```bat
-ScriptDependents.cmd 1.cmd 2.cmd
-ScriptDependents.cmd ..\xxx\*.cmd
+ScriptDependencies.cmd 1.cmd 2.cmd
+ScriptDependencies.cmd ..\xxx\*.cmd
 ```
