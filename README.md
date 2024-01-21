@@ -30,7 +30,7 @@
 
 ## 配置文件
 
-配置文件为非标准 INI 格式, 使用ANSI编码.
+配置文件为非标准 INI 格式, 使用 ANSI 编码.
 
 执行时读取同名但扩展名为`.ini`的配置文件, 通常为`ScriptDependencies.ini`.
 
@@ -102,7 +102,7 @@ DST=Target\Folder
 
 ## 命令行:
 
-命令行: ScriptDependencies.cmd <脚本文件>...
+命令行: `ScriptDependencies.cmd <脚本文件>...`
 
 - 脚本文件
 
@@ -113,4 +113,34 @@ DST=Target\Folder
 ```bat
 ScriptDependencies.cmd 1.cmd 2.cmd
 ScriptDependencies.cmd ..\xxx\*.cmd
+```
+
+## 辅助工具
+
+一些额外提供的辅助工具.
+
+### 脚本依赖合并(ScriptMerge.cmd)
+
+提供脚本和依赖进行合并的功能.
+
+依赖文件合并到脚本文件末尾, 并附带依赖文件名(空格会被替换为`_`)的标签.
+
+脚本文件的`CALL 依赖文件名`替换为`CALL :依赖文件名`.
+
+命令行: `ScriptMerge.cmd <脚本文件> [依赖文件1] [依赖文件2] ...`
+
+输出合并后文件到`脚本文件目录\[Merged]脚本文件名`.
+
+- 脚本文件
+
+  指定需要合并的脚本文件.
+
+- 依赖文件
+
+  指定依赖的文件, 支持 Powershell 通配符.
+
+示例:
+
+```bat
+ScriptMerge.cmd xxx.cmd target\script\*.cmd script\*.cmd *.cmd
 ```
