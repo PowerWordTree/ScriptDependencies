@@ -13,7 +13,7 @@ SET "PATH=%~dp0Bin;%~dp0Script;%PATH%"
 SET "_EXIT_CODE=0"
 CD /D "%~dp0"
 ::读取配置
-CALL Config.FileRead.CMD "_CONFIG" "%~n0.ini"
+CALL Config.FileRead.CMD "_CONFIG" "%~dpn0.ini"
 ::初始化配置
 FOR /F "tokens=1,* usebackq delims==" %%A IN (`SET "_CONFIG." 2^>NUL`) DO (
   ::::展开变量
